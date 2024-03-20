@@ -32,7 +32,23 @@ public class BookController {
 		ResponseEntity responseEntity=new ResponseEntity<>(bookList,HttpStatus.OK);
 		return responseEntity;
 	}
-	
+	@GetMapping(value="/book/get-by-id")
+	public ResponseEntity<?>getById(@RequestParam Long id){
+	BookDTO book=	bookService.getBookById(id);
+		return new ResponseEntity<>(book,HttpStatus.OK);
+	}
+	@DeleteMapping(value="/book/id")
+	public ResponseEntity<?>deleteById(@RequestParam Long id){
+		bookService.deleteById(id);
+		return new ResponseEntity<>("book deleted successfully",HttpStatus.OK);
+	}
+	@GetMapping(value="/book/list-books-by-pagination")
+	public ResponseEntity<?>listBookByPagination(@RequestParam Integer pageNumber,@RequestParam Integer pageSize){
+		List<BookDTO> bookList=bookService.listBookByPageNumber(pageNumber, pageSize);
+		ResponseEntity responseEntity=new ResponseEntity<>(bookList,HttpStatus.OK); 
+		return responseEntity;
+		
+	}
 	
 	
 

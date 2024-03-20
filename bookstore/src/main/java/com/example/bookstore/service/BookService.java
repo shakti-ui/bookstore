@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.bookstore.model.Book;
@@ -18,6 +21,7 @@ public class BookService {
 
 	public BookDTO createBook(BookDTO bookDTO) {
 		Book book =new Book();
+		//book.setId(bookDTO.getId());
 		book.setBookId(UUID.randomUUID().toString());
 		book.setTitle(bookDTO.getTitle());
 		book.setIsbn(bookDTO.getIsbn());
@@ -25,7 +29,7 @@ public class BookService {
 		book.setAuthor(bookDTO.getAuthor());
 		
 		book=bookRepository.save(book);
-		bookDTO.setBookId(book.getBookId());
+		//bookDTO.setBookId(book.getBookId());
 		return bookDTO;
 	}
 	public List<Book> getAllBooks(){
@@ -46,6 +50,7 @@ public class BookService {
 	public BookDTO getBookById(Long id) {
 		Book book=bookRepository.findById(id).get();
 		BookDTO bookDTO=new BookDTO();
+		bookDTO.setId(book.getId());
 		bookDTO.setBookId(book.getBookId());
 		bookDTO.setTitle(book.getTitle());
 		bookDTO.setAuthor(book.getAuthor());
@@ -65,6 +70,29 @@ public class BookService {
 	}
 	public void deleteById(Long id) {
 		bookRepository.deleteById(id);
+	}
+	public List<BookDTO>listBookByPageNumber(int pageNumber,int pageSize){
+//		Sort sort;
+//		if (sortBook.equalsIgnoreCase("DESC")) {
+//			sort=Sort.by(sortBy).descending();
+//		}else {
+//			sort=Sort.by(sortBy).ascending();
+//		}
+		PageRequest pageRequest=PageRequest.of(pageNumber, pageSize);
+		Page<Book>page=bookRepository.findAll(pageRequest);
+		List<BookDTO>books=new ArrayList<>();
+		for(Book book:page.getContent()) {
+			BookDTO bookDTO=new BookDTO();
+			bookDTO.setId(book.getId());
+			bookDTO.setBookId(book.getBookId());
+			bookDTO.setTitle(book.getTitle());
+			bookDTO.setAuthor(book.getAuthor());
+			bookDTO.setIsbn(book.getIsbn());
+			bookDTO.setPrice(book.getPrice());
+			books.add(bookDTO);
+		}
+		return books;
+		
 	}
 		
 	
